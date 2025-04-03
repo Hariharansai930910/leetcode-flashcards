@@ -1,0 +1,108 @@
+{
+  "categoryName": "Binary Search",
+  "problems": [
+    {
+      "id": 1,
+      "title": "Binary Search",
+      "difficulty": "Easy",
+      "description": "Given a sorted array, return the index of target. If not found, return -1.",
+      "code": "def binarySearch(nums, target):\n    left, right = 0, len(nums) - 1\n    \n    while left <= right:\n        mid = (left + right) // 2\n        if nums[mid] == target:\n            return mid\n        elif nums[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n            \n    return -1",
+      "hints": [
+        "Use classic binary search algorithm",
+        "Maintain left and right pointers",
+        "Check the middle element and adjust search space",
+        "Time complexity: O(log N)",
+        "Space complexity: O(1)"
+      ],
+      "mnemonic": "The 'Half and Decide' approach: Cut the search space in half each time, deciding which half contains the target based on the middle element."
+    },
+    {
+      "id": 2,
+      "title": "Search a 2D Matrix",
+      "difficulty": "Medium",
+      "description": "Given an m x n matrix where rows and columns are sorted, search for a target value.",
+      "code": "def searchMatrix(matrix, target):\n    if not matrix or not matrix[0]:\n        return False\n    \n    rows, cols = len(matrix), len(matrix[0])\n    left, right = 0, rows * cols - 1\n    \n    while left <= right:\n        mid = (left + right) // 2\n        mid_value = matrix[mid // cols][mid % cols]\n        \n        if mid_value == target:\n            return True\n        elif mid_value < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n            \n    return False",
+      "hints": [
+        "Treat the 2D matrix as a flattened sorted array",
+        "Convert 1D index to 2D coordinates using division and modulo",
+        "Apply standard binary search algorithm",
+        "Time complexity: O(log(m×n))",
+        "Space complexity: O(1)"
+      ],
+      "mnemonic": "The 'Flattened Matrix' technique: Imagine the 2D matrix as a single sorted array, using math to convert between 1D and 2D positions."
+    },
+    {
+      "id": 3,
+      "title": "Koko Eating Bananas",
+      "difficulty": "Medium",
+      "description": "Find the minimum eating speed k such that Koko can eat all bananas within h hours.",
+      "code": "import math\n\ndef minEatingSpeed(piles, h):\n    left, right = 1, max(piles)\n    \n    def canFinish(speed):\n        return sum(math.ceil(pile / speed) for pile in piles) <= h\n    \n    while left < right:\n        mid = (left + right) // 2\n        if canFinish(mid):\n            right = mid\n        else:\n            left = mid + 1\n            \n    return left",
+      "hints": [
+        "Use binary search on the possible eating speeds",
+        "Check for each speed if Koko can finish all bananas within h hours",
+        "The minimum valid speed will be the answer",
+        "Time complexity: O(N log M) where M is max pile size",
+        "Space complexity: O(1)"
+      ],
+      "mnemonic": "The 'Speed Test' method: Binary search through possible speeds, testing each one to see if it allows finishing in time."
+    },
+    {
+      "id": 4,
+      "title": "Find Minimum in Rotated Sorted Array",
+      "difficulty": "Medium",
+      "description": "Find the minimum element in a rotated sorted array.",
+      "code": "def findMin(nums):\n    left, right = 0, len(nums) - 1\n    \n    while left < right:\n        mid = (left + right) // 2\n        if nums[mid] > nums[right]:  \n            left = mid + 1\n        else:\n            right = mid  \n            \n    return nums[left]",
+      "hints": [
+        "Use binary search to locate the rotation point",
+        "Compare mid element with rightmost element to determine which half has the minimum",
+        "Time complexity: O(log N)",
+        "Space complexity: O(1)"
+      ],
+      "mnemonic": "The 'Pivot Finder' technique: If the middle element is greater than the rightmost element, the minimum must be in the right half; otherwise, it's in the left half (including the middle)."
+    },
+    {
+      "id": 5,
+      "title": "Search in Rotated Sorted Array",
+      "difficulty": "Medium",
+      "description": "Search for target in a rotated sorted array.",
+      "code": "def search(nums, target):\n    left, right = 0, len(nums) - 1\n    \n    while left <= right:\n        mid = (left + right) // 2\n        if nums[mid] == target:\n            return mid\n        if nums[left] <= nums[mid]:  \n            if nums[left] <= target < nums[mid]:\n                right = mid - 1\n            else:\n                left = mid + 1\n        else:  \n            if nums[mid] < target <= nums[right]:\n                left = mid + 1\n            else:\n                right = mid - 1\n                \n    return -1",
+      "hints": [
+        "Determine which half of the array is sorted",
+        "Check if the target is in the sorted half",
+        "If yes, search that half; otherwise, search the other half",
+        "Time complexity: O(log N)",
+        "Space complexity: O(1)"
+      ],
+      "mnemonic": "The 'Find the Sorted Side' approach: First identify which half is sorted, then determine if the target is in that half - if yes, search there; otherwise, search the other half."
+    },
+    {
+      "id": 6,
+      "title": "Time-Based Key-Value Store",
+      "difficulty": "Medium",
+      "description": "Implement a key-value store that supports setting values with timestamps and retrieving the most recent value before a given timestamp.",
+      "code": "from collections import defaultdict\nimport bisect\n\nclass TimeMap:\n    def __init__(self):\n        self.store = defaultdict(list)\n\n    def set(self, key, value, timestamp):\n        self.store[key].append((timestamp, value))\n\n    def get(self, key, timestamp):\n        if key not in self.store:\n            return \"\"\n        \n        values = self.store[key]\n        idx = bisect.bisect_right(values, (timestamp, chr(255))) - 1\n        \n        return values[idx][1] if idx >= 0 else \"\"",
+      "hints": [
+        "Store values in a sorted list by timestamp",
+        "Use binary search (bisect) to find the most recent value before the given timestamp",
+        "Time complexity: O(1) for set, O(log N) for get",
+        "Space complexity: O(N)"
+      ],
+      "mnemonic": "The 'Timeline Search' technique: Values are stored in chronological order, and binary search finds the most recent value before a given timestamp."
+    },
+    {
+      "id": 7,
+      "title": "Median of Two Sorted Arrays",
+      "difficulty": "Hard",
+      "description": "Find the median of two sorted arrays.",
+      "code": "def findMedianSortedArrays(nums1, nums2):\n    if len(nums1) > len(nums2):\n        nums1, nums2 = nums2, nums1  # Ensure nums1 is the smaller array\n\n    x, y = len(nums1), len(nums2)\n    left, right = 0, x\n\n    while left <= right:\n        partitionX = (left + right) // 2\n        partitionY = (x + y + 1) // 2 - partitionX\n\n        maxX = float('-inf') if partitionX == 0 else nums1[partitionX - 1]\n        minX = float('inf') if partitionX == x else nums1[partitionX]\n        maxY = float('-inf') if partitionY == 0 else nums2[partitionY - 1]\n        minY = float('inf') if partitionY == y else nums2[partitionY]\n\n        if maxX <= minY and maxY <= minX:\n            if (x + y) % 2 == 0:\n                return (max(maxX, maxY) + min(minX, minY)) / 2\n            else:\n                return max(maxX, maxY)\n        elif maxX > minY:\n            right = partitionX - 1\n        else:\n            left = partitionX + 1",
+      "hints": [
+        "Use binary search on the smaller array to find the correct partition",
+        "Ensure elements on the left side are smaller than elements on the right side",
+        "Handle odd and even total length cases separately",
+        "Time complexity: O(log min(N, M))",
+        "Space complexity: O(1)"
+      ],
+      "mnemonic": "The 'Perfect Partition' approach: Find a partition point where all elements on the left are smaller than all elements on the right, effectively splitting the merged array exactly in the middle."
+    }
+  ]
+}

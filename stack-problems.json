@@ -1,0 +1,109 @@
+{
+  "categoryName": "Stack",
+  "problems": [
+    {
+      "id": 1,
+      "title": "Valid Parentheses",
+      "difficulty": "Easy",
+      "description": "Given a string containing only ()[], determine if it is valid.",
+      "code": "def isValid(s):\n    stack = []\n    mapping = {')': '(', '}': '{', ']': '['}\n    \n    for char in s:\n        if char in mapping:\n            top = stack.pop() if stack else '#'\n            if mapping[char] != top:\n                return False\n        else:\n            stack.append(char)\n    \n    return not stack",
+      "hints": [
+        "Use a stack to keep track of opening brackets",
+        "When encountering a closing bracket, check if it matches the top of the stack",
+        "The stack should be empty at the end for a valid string",
+        "Time complexity: O(N)",
+        "Space complexity: O(N)"
+      ],
+      "mnemonic": "The 'Bracket Matching' technique: Each opening bracket waits on the stack for its matching closing bracket, like perfectly nested Russian dolls."
+    },
+    {
+      "id": 2,
+      "title": "Min Stack",
+      "difficulty": "Medium",
+      "description": "Implement a stack that supports push, pop, top, and retrieving the minimum element in constant time.",
+      "code": "class MinStack:\n    def __init__(self):\n        self.stack = []\n        self.min_stack = []\n\n    def push(self, val):\n        self.stack.append(val)\n        if not self.min_stack or val <= self.min_stack[-1]:\n            self.min_stack.append(val)\n\n    def pop(self):\n        if self.stack.pop() == self.min_stack[-1]:\n            self.min_stack.pop()\n\n    def top(self):\n        return self.stack[-1]\n\n    def getMin(self):\n        return self.min_stack[-1]",
+      "hints": [
+        "Maintain two stacks: one for values and one for minimum values",
+        "Only push to min_stack when a new value is less than or equal to the current minimum",
+        "Remove from min_stack when popping the current minimum from the main stack",
+        "Time complexity: O(1) for all operations",
+        "Space complexity: O(N)"
+      ],
+      "mnemonic": "The 'Shadow Minimum' approach: Keep a second stack that shadows the main stack but only stores values when they establish a new minimum."
+    },
+    {
+      "id": 3,
+      "title": "Evaluate Reverse Polish Notation",
+      "difficulty": "Medium",
+      "description": "Evaluate an arithmetic expression in Reverse Polish Notation.",
+      "code": "def evalRPN(tokens):\n    stack = []\n    for token in tokens:\n        if token in {'+', '-', '*', '/'}:\n            b, a = stack.pop(), stack.pop()\n            if token == '+':\n                stack.append(a + b)\n            elif token == '-':\n                stack.append(a - b)\n            elif token == '*':\n                stack.append(a * b)\n            elif token == '/':\n                stack.append(int(a / b))  # Ensure truncation towards zero\n        else:\n            stack.append(int(token))\n    \n    return stack[0]",
+      "hints": [
+        "Use a stack to store numbers",
+        "When encountering an operator, pop the two top numbers, apply the operation, and push the result back",
+        "For division, ensure truncation towards zero",
+        "Time complexity: O(N)",
+        "Space complexity: O(N)"
+      ],
+      "mnemonic": "The 'Operation Assembly Line' method: Numbers wait on the stack until an operator comes along and combines them, putting the result back on the stack."
+    },
+    {
+      "id": 4,
+      "title": "Generate Parentheses",
+      "difficulty": "Medium",
+      "description": "Generate all valid combinations of n pairs of parentheses.",
+      "code": "def generateParenthesis(n):\n    res = []\n    \n    def backtrack(s, left, right):\n        if len(s) == 2 * n:\n            res.append(s)\n            return\n        if left < n:\n            backtrack(s + \"(\", left + 1, right)\n        if right < left:\n            backtrack(s + \")\", left, right + 1)\n    \n    backtrack(\"\", 0, 0)\n    return res",
+      "hints": [
+        "Use backtracking to generate valid combinations",
+        "Keep track of the number of opening and closing parentheses used",
+        "Only add a closing parenthesis if there are more opening parentheses than closing ones",
+        "Time complexity: O(4^n / √n)",
+        "Space complexity: O(N)"
+      ],
+      "mnemonic": "The 'Balance Builder' strategy: Always ensure you have more opening parentheses than closing ones at any point, adding closing ones only when they won't break the balance."
+    },
+    {
+      "id": 5,
+      "title": "Daily Temperatures",
+      "difficulty": "Medium",
+      "description": "Given an array of temperatures, return an array where ans[i] is the number of days until a warmer temperature.",
+      "code": "def dailyTemperatures(temperatures):\n    stack = []\n    res = [0] * len(temperatures)\n    \n    for i, temp in enumerate(temperatures):\n        while stack and temperatures[stack[-1]] < temp:\n            idx = stack.pop()\n            res[idx] = i - idx\n        stack.append(i)\n    \n    return res",
+      "hints": [
+        "Use a monotonic decreasing stack to store indices",
+        "When finding a higher temperature, pop from the stack and calculate the difference in days",
+        "Time complexity: O(N)",
+        "Space complexity: O(N)"
+      ],
+      "mnemonic": "The 'Temperature Waiting List' approach: Each day waits on the stack until a warmer day comes along, which then calculates how long it had to wait."
+    },
+    {
+      "id": 6,
+      "title": "Car Fleet",
+      "difficulty": "Medium",
+      "description": "Given position and speed arrays of cars, return the number of fleets that arrive at the destination.",
+      "code": "def carFleet(target, position, speed):\n    cars = sorted(zip(position, speed), reverse=True)\n    stack = []\n    \n    for pos, spd in cars:\n        time = (target - pos) / spd\n        if not stack or time > stack[-1]:\n            stack.append(time)\n    \n    return len(stack)",
+      "hints": [
+        "Sort cars by position in descending order",
+        "Calculate arrival time for each car",
+        "If a car arrives later than the car ahead of it, it will form a new fleet",
+        "Time complexity: O(N log N)",
+        "Space complexity: O(N)"
+      ],
+      "mnemonic": "The 'Arrival Time Stacking' technique: Cars form fleets when a car behind can't catch up to the car in front before reaching the destination."
+    },
+    {
+      "id": 7,
+      "title": "Largest Rectangle in Histogram",
+      "difficulty": "Hard",
+      "description": "Find the largest rectangular area in a histogram.",
+      "code": "def largestRectangleArea(heights):\n    stack = []\n    max_area = 0\n    heights.append(0)  # Sentinel value\n    \n    for i, h in enumerate(heights):\n        while stack and heights[stack[-1]] > h:\n            height = heights[stack.pop()]\n            width = i if not stack else i - stack[-1] - 1\n            max_area = max(max_area, height * width)\n        stack.append(i)\n    \n    return max_area",
+      "hints": [
+        "Use a monotonic increasing stack to track heights",
+        "When finding a shorter bar, calculate the area for all taller bars that end at this position",
+        "Use a sentinel value at the end to process remaining bars",
+        "Time complexity: O(N)",
+        "Space complexity: O(N)"
+      ],
+      "mnemonic": "The 'Height Drop' method: Each bar extends as far as it can until it hits a height drop, which triggers area calculations for all affected bars."
+    }
+  ]
+}

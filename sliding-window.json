@@ -1,0 +1,95 @@
+{
+  "categoryName": "Sliding Window",
+  "problems": [
+    {
+      "id": 1,
+      "title": "Best Time to Buy and Sell Stock",
+      "difficulty": "Easy",
+      "description": "Given an array where prices[i] is the price of a given stock on day i, find the maximum profit.",
+      "code": "def maxProfit(prices):\n    min_price = float('inf')\n    max_profit = 0\n    \n    for price in prices:\n        min_price = min(min_price, price)\n        max_profit = max(max_profit, price - min_price)\n    \n    return max_profit",
+      "hints": [
+        "Keep track of the minimum price seen so far",
+        "Update maximum profit if selling at current price gives a better profit",
+        "Time complexity: O(N)",
+        "Space complexity: O(1)"
+      ],
+      "mnemonic": "The 'Buy Low, Sell High' approach: Track the lowest price you've seen, and for each new price, check if selling at that price maximizes profit."
+    },
+    {
+      "id": 2,
+      "title": "Longest Substring Without Repeating Characters",
+      "difficulty": "Medium",
+      "description": "Find the length of the longest substring without repeating characters.",
+      "code": "def lengthOfLongestSubstring(s):\n    char_set = set()\n    left = max_length = 0\n    \n    for right in range(len(s)):\n        while s[right] in char_set:\n            char_set.remove(s[left])\n            left += 1\n        char_set.add(s[right])\n        max_length = max(max_length, right - left + 1)\n    \n    return max_length",
+      "hints": [
+        "Use a sliding window with a hash set to track characters",
+        "Expand the window to the right when possible",
+        "Contract from the left when a duplicate is found",
+        "Time complexity: O(N)",
+        "Space complexity: O(min(N, 26)) - Limited to 26 lowercase letters if applicable"
+      ],
+      "mnemonic": "The 'Expand and Contract' technique: Grow your window as much as possible until you hit a duplicate, then shrink from the left until the duplicate is removed."
+    },
+    {
+      "id": 3,
+      "title": "Longest Repeating Character Replacement",
+      "difficulty": "Medium",
+      "description": "Find the length of the longest substring with at most k character replacements.",
+      "code": "from collections import Counter\n\ndef characterReplacement(s, k):\n    count = Counter()\n    left = max_length = max_freq = 0\n    \n    for right in range(len(s)):\n        count[s[right]] += 1\n        max_freq = max(max_freq, count[s[right]])\n        \n        if (right - left + 1) - max_freq > k:\n            count[s[left]] -= 1\n            left += 1\n        \n        max_length = max(max_length, right - left + 1)\n    \n    return max_length",
+      "hints": [
+        "Use a sliding window with a frequency counter",
+        "Track the maximum frequency of any character in the window",
+        "If (window length - max frequency) > k, then the window needs more than k replacements",
+        "Time complexity: O(N)",
+        "Space complexity: O(26) - Limited to 26 uppercase letters"
+      ],
+      "mnemonic": "The 'Max Frequency Dominance' strategy: A window is valid when (window size - max frequency) ≤ k, meaning we can replace all other characters within our budget."
+    },
+    {
+      "id": 4,
+      "title": "Permutation in String",
+      "difficulty": "Medium",
+      "description": "Given two strings s1 and s2, check if s1's permutation is a substring of s2.",
+      "code": "from collections import Counter\n\ndef checkInclusion(s1, s2):\n    if len(s1) > len(s2):\n        return False\n    \n    s1_count = Counter(s1)\n    s2_count = Counter(s2[:len(s1)])\n    \n    if s1_count == s2_count:\n        return True\n    \n    left = 0\n    for right in range(len(s1), len(s2)):\n        s2_count[s2[right]] += 1\n        s2_count[s2[left]] -= 1\n        if s2_count[s2[left]] == 0:\n            del s2_count[s2[left]]\n        left += 1\n        if s1_count == s2_count:\n            return True\n    \n    return False",
+      "hints": [
+        "Use a fixed-size sliding window (length of s1)",
+        "Compare character frequencies in s1 with the current window in s2",
+        "Move the window one character at a time",
+        "Time complexity: O(N)",
+        "Space complexity: O(26) - Limited to 26 lowercase letters"
+      ],
+      "mnemonic": "The 'Frequency Matching' technique: A permutation exists if the character frequencies in a window of s2 exactly match the frequencies in s1."
+    },
+    {
+      "id": 5,
+      "title": "Minimum Window Substring",
+      "difficulty": "Hard",
+      "description": "Given two strings s and t, find the minimum substring of s that contains all characters of t.",
+      "code": "from collections import Counter\n\ndef minWindow(s, t):\n    if not t or not s:\n        return \"\"\n    \n    t_count = Counter(t)\n    window_count = Counter()\n    \n    left = right = formed = 0\n    required = len(t_count)\n    min_len = float(\"inf\")\n    min_window = \"\"\n\n    while right < len(s):\n        window_count[s[right]] += 1\n        if window_count[s[right]] == t_count[s[right]]:\n            formed += 1\n\n        while formed == required:\n            if right - left + 1 < min_len:\n                min_len = right - left + 1\n                min_window = s[left:right+1]\n\n            window_count[s[left]] -= 1\n            if s[left] in t_count and window_count[s[left]] < t_count[s[left]]:\n                formed -= 1\n\n            left += 1\n        \n        right += 1\n    \n    return min_window",
+      "hints": [
+        "Use a sliding window with frequency counters",
+        "Expand the window until all required characters are included",
+        "Contract the window from the left to find the minimum valid substring",
+        "Track how many character frequencies are satisfied",
+        "Time complexity: O(N)",
+        "Space complexity: O(26) - Limited to 26 characters"
+      ],
+      "mnemonic": "The 'Fulfill and Minimize' approach: First expand the window until all requirements are met, then contract it as much as possible while keeping it valid."
+    },
+    {
+      "id": 6,
+      "title": "Sliding Window Maximum",
+      "difficulty": "Hard",
+      "description": "Given an array nums and a window size k, return the maximum element in each window.",
+      "code": "from collections import deque\n\ndef maxSlidingWindow(nums, k):\n    if not nums:\n        return []\n    \n    deque_window = deque()\n    result = []\n\n    for i in range(len(nums)):\n        # Remove elements outside the window\n        if deque_window and deque_window[0] < i - k + 1:\n            deque_window.popleft()\n\n        # Remove smaller elements in k range\n        while deque_window and nums[deque_window[-1]] < nums[i]:\n            deque_window.pop()\n        \n        deque_window.append(i)\n\n        # Append max value once window size is reached\n        if i >= k - 1:\n            result.append(nums[deque_window[0]])\n\n    return result",
+      "hints": [
+        "Use a deque to maintain indices of maximum elements",
+        "Remove elements that fall outside the window",
+        "Remove smaller elements as they can't be the maximum",
+        "Time complexity: O(N)",
+        "Space complexity: O(K)"
+      ],
+      "mnemonic": "The 'Decreasing Queue' method: Maintain a queue of potentially maximum elements in decreasing order, with the maximum always at the front."
+    }
+  ]
+}

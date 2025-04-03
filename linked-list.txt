@@ -1,0 +1,156 @@
+{
+  "categoryName": "Linked List",
+  "problems": [
+    {
+      "id": 1,
+      "title": "Reverse Linked List",
+      "difficulty": "Easy",
+      "description": "Reverse a singly linked list.",
+      "code": "class ListNode:\n    def __init__(self, val=0, next=None):\n        self.val = val\n        self.next = next\n\ndef reverseList(head):\n    prev, curr = None, head\n    \n    while curr:\n        nxt = curr.next\n        curr.next = prev\n        prev = curr\n        curr = nxt\n    \n    return prev",
+      "hints": [
+        "Use iterative two-pointer technique",
+        "Keep track of previous, current, and next nodes",
+        "Reverse the direction of next pointers",
+        "Time complexity: O(N)",
+        "Space complexity: O(1)"
+      ],
+      "mnemonic": "The 'Three-Point Reversal' technique: Like turning around a chain by grabbing three links at a time - previous, current, and next - and flipping their direction one by one."
+    },
+    {
+      "id": 2,
+      "title": "Merge Two Sorted Lists",
+      "difficulty": "Easy",
+      "description": "Merge two sorted linked lists into one sorted list.",
+      "code": "def mergeTwoLists(l1, l2):\n    dummy = ListNode()\n    tail = dummy\n    \n    while l1 and l2:\n        if l1.val < l2.val:\n            tail.next = l1\n            l1 = l1.next\n        else:\n            tail.next = l2\n            l2 = l2.next\n        tail = tail.next\n\n    tail.next = l1 if l1 else l2\n    return dummy.next",
+      "hints": [
+        "Use a dummy node and iterative merging",
+        "Compare values from both lists and take the smaller one",
+        "Handle remaining elements after one list is exhausted",
+        "Time complexity: O(N+M)",
+        "Space complexity: O(1)"
+      ],
+      "mnemonic": "The 'Compare and Link' approach: Like zipping two chains together by always picking the smaller link from either chain and attaching it to your result."
+    },
+    {
+      "id": 3,
+      "title": "Linked List Cycle",
+      "difficulty": "Easy",
+      "description": "Detect if a linked list has a cycle.",
+      "code": "def hasCycle(head):\n    slow, fast = head, head\n\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n        if slow == fast:\n            return True\n            \n    return False",
+      "hints": [
+        "Use Floyd's Cycle Detection (slow & fast pointers)",
+        "Slow pointer moves one step at a time",
+        "Fast pointer moves two steps at a time",
+        "If they meet, there's a cycle",
+        "Time complexity: O(N)",
+        "Space complexity: O(1)"
+      ],
+      "mnemonic": "The 'Tortoise and Hare' race: If there's a cycle, the fast runner (hare) will eventually loop around and catch up to the slow runner (tortoise)."
+    },
+    {
+      "id": 4,
+      "title": "Reorder List",
+      "difficulty": "Medium",
+      "description": "Reorder a linked list in-place as L0 → Ln → L1 → Ln-1 → L2 → Ln-2 → ...",
+      "code": "def reorderList(head):\n    if not head or not head.next:\n        return\n    \n    # Find middle\n    slow, fast = head, head\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n\n    # Reverse second half\n    prev, curr = None, slow.next\n    slow.next = None  # Split list\n    while curr:\n        nxt = curr.next\n        curr.next = prev\n        prev = curr\n        curr = nxt\n\n    # Merge two halves\n    first, second = head, prev\n    while second:\n        tmp1, tmp2 = first.next, second.next\n        first.next = second\n        second.next = tmp1\n        first, second = tmp1, tmp2",
+      "hints": [
+        "Break the problem into three steps:",
+        "1. Find the middle of the list",
+        "2. Reverse the second half",
+        "3. Merge the two halves by alternating nodes",
+        "Time complexity: O(N)",
+        "Space complexity: O(1)"
+      ],
+      "mnemonic": "The 'Split, Flip, Zip' method: Split the list in the middle, flip the second half upside down, then zip the two pieces together like a zipper."
+    },
+    {
+      "id": 5,
+      "title": "Remove Nth Node From End of List",
+      "difficulty": "Medium",
+      "description": "Remove the nth node from the end of the list.",
+      "code": "def removeNthFromEnd(head, n):\n    dummy = ListNode(0, head)\n    fast, slow = dummy, dummy\n    \n    for _ in range(n + 1):\n        fast = fast.next\n    \n    while fast:\n        fast = fast.next\n        slow = slow.next\n    \n    slow.next = slow.next.next\n    return dummy.next",
+      "hints": [
+        "Use two-pointer technique",
+        "Place fast pointer n+1 steps ahead of slow",
+        "When fast reaches the end, slow is at the node before the one to remove",
+        "Time complexity: O(N)",
+        "Space complexity: O(1)"
+      ],
+      "mnemonic": "The 'Advance Scout' technique: Send one pointer ahead by exactly n steps, then move both pointers until the first reaches the end - the second will be perfectly positioned to remove the nth node from the end."
+    },
+    {
+      "id": 6,
+      "title": "Copy List with Random Pointer",
+      "difficulty": "Medium",
+      "description": "Clone a linked list with a random pointer.",
+      "code": "def copyRandomList(head):\n    if not head:\n        return None\n\n    # Step 1: Create new nodes interleaved with the old nodes\n    curr = head\n    while curr:\n        nxt = curr.next\n        curr.next = Node(curr.val, nxt, None)\n        curr = nxt\n\n    # Step 2: Assign random pointers\n    curr = head\n    while curr:\n        if curr.random:\n            curr.next.random = curr.random.next\n        curr = curr.next.next\n\n    # Step 3: Separate the two lists\n    old, new = head, head.next\n    new_head = head.next\n    while old:\n        old.next = old.next.next\n        new.next = new.next.next if new.next else None\n        old, new = old.next, new.next\n    \n    return new_head",
+      "hints": [
+        "Use interleaving nodes in three steps:",
+        "1. Create a copy of each node and place it right after the original",
+        "2. Set random pointers for copied nodes",
+        "3. Separate the original and copied lists",
+        "Time complexity: O(N)",
+        "Space complexity: O(1) excluding the returned list"
+      ],
+      "mnemonic": "The 'Shadow Clone' technique: Create a shadow copy of each node right after the original, link the shadows together correctly, then separate the shadow list from the original."
+    },
+    {
+      "id": 7,
+      "title": "Add Two Numbers",
+      "difficulty": "Medium",
+      "description": "Add two linked lists representing numbers.",
+      "code": "def addTwoNumbers(l1, l2):\n    dummy = ListNode()\n    curr, carry = dummy, 0\n\n    while l1 or l2 or carry:\n        val1 = l1.val if l1 else 0\n        val2 = l2.val if l2 else 0\n        carry, sum_val = divmod(val1 + val2 + carry, 10)\n        \n        curr.next = ListNode(sum_val)\n        curr = curr.next\n\n        l1 = l1.next if l1 else None\n        l2 = l2.next if l2 else None\n\n    return dummy.next",
+      "hints": [
+        "Use a dummy node and carry value",
+        "Handle digits from both lists plus any carry",
+        "Continue until all digits and carries are processed",
+        "Time complexity: O(max(N,M))",
+        "Space complexity: O(1) excluding the result"
+      ],
+      "mnemonic": "The 'Digit-by-Digit Addition' method: Just like adding numbers by hand, process one digit position at a time, carrying over when needed."
+    },
+    {
+      "id": 8,
+      "title": "Find The Duplicate Number",
+      "difficulty": "Medium",
+      "description": "Find the duplicate number in an array.",
+      "code": "def findDuplicate(nums):\n    slow, fast = nums[0], nums[0]\n    \n    while True:\n        slow = nums[slow]\n        fast = nums[nums[fast]]\n        if slow == fast:\n            break\n\n    slow = nums[0]\n    while slow != fast:\n        slow = nums[slow]\n        fast = nums[fast]\n\n    return slow",
+      "hints": [
+        "Treat the array as a linked list where nums[i] points to nums[nums[i]]",
+        "Use Floyd's Cycle Detection to find the entrance to the cycle",
+        "Time complexity: O(N)",
+        "Space complexity: O(1)"
+      ],
+      "mnemonic": "The 'Array as Linked List' insight: By viewing the array as a linked list, a duplicate creates a cycle, which can be found using cycle detection."
+    },
+    {
+      "id": 9,
+      "title": "LRU Cache",
+      "difficulty": "Medium",
+      "description": "Implement an LRU (Least Recently Used) Cache.",
+      "code": "from collections import OrderedDict\n\nclass LRUCache:\n    def __init__(self, capacity):\n        self.cache = OrderedDict()\n        self.capacity = capacity\n\n    def get(self, key):\n        if key in self.cache:\n            self.cache.move_to_end(key)\n            return self.cache[key]\n        return -1\n\n    def put(self, key, value):\n        if key in self.cache:\n            self.cache.move_to_end(key)\n        self.cache[key] = value\n        if len(self.cache) > self.capacity:\n            self.cache.popitem(last=False)",
+      "hints": [
+        "Use OrderedDict for O(1) operations",
+        "Move items to the end when accessed",
+        "Remove the first item (least recently used) when capacity is exceeded",
+        "Time complexity: O(1) for all operations",
+        "Space complexity: O(capacity)"
+      ],
+      "mnemonic": "The 'Move to Front' principle: When you touch something, move it to the front of the line; when you need space, remove whatever is at the back of the line."
+    },
+    {
+      "id": 10,
+      "title": "Merge K Sorted Lists",
+      "difficulty": "Hard",
+      "description": "Merge k sorted linked lists into one sorted list.",
+      "code": "from heapq import heappush, heappop\n\ndef mergeKLists(lists):\n    heap = []\n    dummy = ListNode()\n    curr = dummy\n\n    for i, lst in enumerate(lists):\n        if lst:\n            heappush(heap, (lst.val, i, lst))\n    \n    while heap:\n        val, i, node = heappop(heap)\n        curr.next = node\n        curr = node\n        if node.next:\n            heappush(heap, (node.next.val, i, node.next))\n    \n    return dummy.next",
+      "hints": [
+        "Use a min-heap to efficiently find the next smallest element",
+        "Keep track of the list index to handle duplicate values",
+        "Time complexity: O(N log K) where K is the number of lists",
+        "Space complexity: O(K)"
+      ],
+      "mnemonic": "The 'Tournament Champion' approach: Use a priority queue like a tournament where the smallest value always wins and gets added to the result."
+    }
+  ]
+}
